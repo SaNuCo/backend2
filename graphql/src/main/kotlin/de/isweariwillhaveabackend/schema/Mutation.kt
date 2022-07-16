@@ -190,7 +190,7 @@ class Mutation(val nodeRepository: NodeRepository, val userRepository: UserRepos
         if (input.avatar is OptionalInput.Defined) {
             dfe.user.avatar = input.avatar.value
         }
-        return userRepository.sa
+        return userRepository.save(dfe.user).awaitSingle()
     }
 
 

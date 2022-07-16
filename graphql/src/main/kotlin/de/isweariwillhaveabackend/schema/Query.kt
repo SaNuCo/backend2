@@ -20,7 +20,7 @@ class Query(val foodOfferingRepository: FoodOfferingCypherDSLRepository, val cli
     com.expediagroup.graphql.server.operations.Query {
     fun echo(input: String) = input
 
-    suspend fun foodOfferingsPriorityList(
+    suspend fun foodOfferingsNear(
         location: List<Double>,
         dfe: DataFetchingEnvironment,
         after: ID?,
