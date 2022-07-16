@@ -183,6 +183,16 @@ class Mutation(val nodeRepository: NodeRepository, val userRepository: UserRepos
         return true
     }
 
+    suspend fun updateUser(input: UpdateUserInput, dfe: DataFetchingEnvironment): User {
+        if (input.displayName != null) {
+            dfe.user.displayName = input.displayName
+        }
+        if (input.avatar is OptionalInput.Defined) {
+            dfe.user.avatar = input.avatar.value
+        }
+        return userRepository.sa
+    }
+
 
     private suspend fun findUsersById(addedUsers: List<ID>) =
         userRepository.findAllById(addedUsers.map { it.value }).collectList().awaitSingle()!!

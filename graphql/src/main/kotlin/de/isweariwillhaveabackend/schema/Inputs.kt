@@ -66,3 +66,8 @@ class UpdateChatInput(
     val addedUsers: List<ID>?,
     val removedUsers: List<ID>?
 )
+
+class UpdateUserInput(
+    val displayName: String,
+    val avatar: OptionalInput<String>
+)
