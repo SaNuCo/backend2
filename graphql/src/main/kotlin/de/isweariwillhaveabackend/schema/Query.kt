@@ -35,15 +35,18 @@ class Query(val foodOfferingRepository: FoodOfferingCypherDSLRepository, val cli
             val lastNode = Cypher.node(FoodOffering::class.simpleName).withProperties("id", lastId)
             val statement = Cypher.match(lastNode).returning(
                 Functions.distance(
-                    Cypher.mapOf("longitude", long, "latitude", lat),
-                    Cypher.mapOf(
-                        "longitude",
-                        Cypher.valueAt(lastNode.property("location"), 0),
-                        "latitude",
-                        Cypher.valueAt(lastNode.property("location"), 1)
+                    Functions.point(Cypher.mapOf("longitude", long, "latitude", lat)),
+                    Functions.point(
+                        Cypher.mapOf(
+                            "longitude",
+                            Cypher.valueAt(lastNode.property("location"), 0),
+                            "latitude",
+                            Cypher.valueAt(lastNode.property("location"), 1)
+                        )
                     )
                 )
             ).build()
+            println(Renderer.getDefaultRenderer().render(statement))
             client.query(Renderer.getDefaultRenderer().render(statement)).bindAll(statement.parameters)
                 .fetchAs(Double::class.java).first().awaitSingle()
         } else {
@@ -69,12 +72,14 @@ class Query(val foodOfferingRepository: FoodOfferingCypherDSLRepository, val cli
             )
         ).with(
             node, Functions.distance(
-                Cypher.mapOf("longitude", long, "latitude", lat),
-                Cypher.mapOf(
-                    "longitude",
-                    Cypher.valueAt(node.property("location"), 0),
-                    "latitude",
-                    Cypher.valueAt(node.property("location"), 1)
+                Functions.point(Cypher.mapOf("longitude", long, "latitude", lat)),
+                Functions.point(
+                    Cypher.mapOf(
+                        "longitude",
+                        Cypher.valueAt(node.property("location"), 0),
+                        "latitude",
+                        Cypher.valueAt(node.property("location"), 1)
+                    )
                 )
             ).`as`(dist)
         )
