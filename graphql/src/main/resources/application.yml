@@ -1,0 +1,14 @@
+graphql:
+  endpoint: api
+  packages:
+    - "de.isweariwillhaveabackend"
+  subscriptions:
+    # Send a ka message every 1000 ms (1 second)
+    keepAliveInterval: 1000
+spring:
+  neo4j:
+    uri: "bolt://localhost:7687"
+logging:
+  level:
+    org.springframework.data.neo4j: DEBUG
+    io.github.graphglue: DEBUG

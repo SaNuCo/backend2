@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  neo4j:
+    image: neo4j:4.4.8
+    restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - /conf
+      - /data
+      - /import
+      - /logs
+      - /plugins
+    environment:
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_dbms_shell_enabled=true
+      - NEO4J_AUTH=none
+  production_api:
+    build:
+      context: ./api
+      dockerfile: docker/Dockerfile-production
+    environment:
+      - "DB_URL=jdbc:mariadb://mysql/canteen"
+      - "DB_USERNAME=canteen_user"
+      - "DB_PASSWORD=canteen_password"
+      - "GRAPHQL_PLAYGROUND_ENABLED=false"
+      - "WAIT_HOSTS=mysql:3306"
+    depends_on:
+      - mysql
+    ports: 
+      - 8081:8080
+  # production_graphql:
+  #   build:
+  #     context: ./graphql
+  #     dockerfile: docker/Dockerfile-production
+  #   depends_on:
+  #     - neo4j
+  #   ports: 
+  #     - 8081:8080
+  mysql:
+    image: "mariadb:10.5"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root_pwd"
+      - "MYSQL_DATABASE=canteen"
+      - "MYSQL_USER=canteen_user"
+      - "MYSQL_PASSWORD=canteen_password"

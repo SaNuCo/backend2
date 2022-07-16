@@ -1,0 +1,12 @@
+FROM gradle:7.5-jdk17
+WORKDIR /home/gradle/api
+ADD . .
+RUN gradle clean build
+
+FROM openjdk:17
+
+RUN useradd -r -u 3000 --create-home java
+COPY --from=0 /home/gradle/api/build/libs/*.jar /home/java/api.jar
+USER java
+WORKDIR /home/java
+CMD java -jar ./api.jar

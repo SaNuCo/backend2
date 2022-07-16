@@ -1,0 +1,16 @@
+FROM gradle:6.7.1-jdk11
+WORKDIR /home/gradle/api
+ADD . .
+RUN gradle clean build
+
+FROM openjdk:11
+
+## Add the wait script to the image
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+
+RUN useradd -r -u 3000 --create-home java
+COPY --from=0 /home/gradle/api/build/libs/*.jar /home/java/api.jar
+USER java
+WORKDIR /home/java
+CMD /wait && java -jar ./api.jar
