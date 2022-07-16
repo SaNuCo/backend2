@@ -7,7 +7,7 @@ graphql:
     keepAliveInterval: 1000
 spring:
   neo4j:
-    uri: "bolt://localhost:7687"
+    uri: "${DB_URL}"
 logging:
   level:
     org.springframework.data.neo4j: DEBUG
